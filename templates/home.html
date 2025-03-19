@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-farhan {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn-farhan:hover {
+            background: #00c2fe;
+        }
+
+        .btn-abid {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-abid:hover {
+            background: #ff4f4f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Diabetes Prediction Models</h2>
+        <p>Select a prediction model:</p>
+        <div class="btn-container">
+            <a href="/predict1" class="btn btn-farhan">Predict with Farhan Model</a>
+            <a href="/predict2" class="btn btn-abid">Predict with Abid Model</a>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #00c2fe;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Diabetes Prediction Form</h2>
+        <form action="/predictAbid" method="post">
+            <label>Gender:</label>
+            <select name="Gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            
+            <label>Age:</label>
+            <input type="text" name="Age" required>
+            
+            <label>Urea:</label>
+            <input type="text" name="Urea" required>
+            
+            <label>Creatine:</label>
+            <input type="text" name="Creatine" required>
+            
+            <label>HbA1c:</label>
+            <input type="text" name="HbA1c" required>
+            
+            <label>Cholesterol:</label>
+            <input type="text" name="Cholesterol" required>
+            
+            <label>Trigliserida:</label>
+            <input type="text" name="Trigliserida" required>
+            
+            <label>VLDL:</label>
+            <input type="text" name="VLDL" required>
+            
+            <label>BMI:</label>
+            <input type="text" name="BMI" required>
+            
+            <button type="submit">Predict</button>
+        </form>
+        
+        {% if prediction %}
+            <h3>Prediction: {{ prediction }}</h3>
+        {% endif %}
+    </div>
+</body>
+
+</html>
