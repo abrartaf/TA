@@ -26,8 +26,8 @@ class ta(db.Model):
     Prediction = db.Column(db.String(50), nullable=False)
 
 # Load Machine Learning Models
-with open('model.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+with open('rf.pkl', 'rb') as model_file:
+    model_farhan = pickle.load(model_file)
 with open('model_abid.pkl', 'rb') as model_file_abid:
     model_abid = pickle.load(model_file_abid)
 
@@ -123,6 +123,50 @@ def predict_abid():
             error = str(e)
 
     return render_template("model_abid.html", prediction=prediction, error=error)
+
+@app.route("/predict3")
+def prediction_both():
+    return render_template("model_both.html")
+
+@app.route("/predictBoth", methods=['POST'])
+def predict_both_models():
+    prediction_abid = None
+    prediction_farhan = None
+    label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
+
+    try:
+        # Get form input
+        Gender = request.form.get('Gender')
+        Age = int(request.form.get('Age'))
+        Urea = float(request.form.get('Urea'))
+        Creatine = float(request.form.get('Creatine'))
+        HbA1c = float(request.form.get('HbA1c'))
+        Cholesterol = float(request.form.get('Cholesterol'))
+        Triglycerides = float(request.form.get('Trigliserida'))
+        VLDL = float(request.form.get('VLDL'))
+        BMI = float(request.form.get('BMI'))
+
+        Gender_encoded = 1 if Gender.lower() == "male" else 0
+        
+        # Abid model input
+        input_abid = pd.DataFrame([[Gender_encoded, Age, Urea, Creatine, HbA1c, Cholesterol, Triglycerides, VLDL, BMI]],
+                                  columns=['Gender', 'Age', 'Urea', 'Creatine', 'HbA1c', 'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'])
+
+        prediction_raw_abid = model_abid.predict(input_abid)[0]
+        prediction_abid = label_mapping.get(prediction_raw_abid, "Unknown")
+
+        # Farhan model input
+        input_farhan = pd.DataFrame([[HbA1c, BMI, Age, Triglycerides, Cholesterol, Gender_encoded]],
+                                    columns=['HbA1c', 'BMI', 'Age', 'Trigliserida', 'Cholesterol', 'Gender'])
+
+        prediction_raw_farhan = model_farhan.predict(input_farhan)[0]
+        prediction_farhan = label_mapping.get(prediction_raw_farhan, "Unknown")
+
+    except Exception as e:
+        prediction_abid = f"Error: {str(e)}"
+        prediction_farhan = f"Error: {str(e)}"
+
+    return render_template("model_both.html", prediction_abid=prediction_abid, prediction_farhan=prediction_farhan)
 
 if __name__ == '__main__':
     with app.app_context():
