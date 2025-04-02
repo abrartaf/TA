@@ -2,6 +2,8 @@ from flask import Flask, request, render_template
 import pickle
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
+from sklearn.ensemble import RandomForestClassifier
+
 
 app = Flask(__name__)
 
@@ -38,135 +40,58 @@ label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
 def home():
     return render_template("home.html")
 
-@app.route("/predict1")
-def predict():
-    return render_template("model_farhan.html")
-
-@app.route("/predictFarhan", methods=['GET', 'POST'])
-def predictfarhan():
-    prediction = None
-    if request.method == 'POST':
-        try:
-            Gender = request.form.get('Gender')
-            Age = request.form.get('Age', type=int)
-            Urea = request.form.get('Urea', type=float)
-            Creatine = request.form.get('Creatine', type=float)
-            HbA1c = request.form.get('HbA1c', type=float)
-            Cholesterol = request.form.get('Cholesterol', type=float)
-            Triglycerides = request.form.get('Trigliserida', type=float)
-            VLDL = request.form.get('VLDL', type=float)
-            BMI = request.form.get('BMI', type=float)
-            
-            # Convert Gender to numerical value
-            Gender_encoded = 1 if Gender.lower() == "male" else 0
-
-            # Create input DataFrame
-            input_data = pd.DataFrame([[Gender_encoded, Age, Urea, Creatine, HbA1c, Cholesterol, Triglycerides, VLDL, BMI]],
-                                      columns=['Gender', 'Age', 'Urea', 'Creatine', 'HbA1c', 'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'])
-
-            # Predict
-            prediction_raw = model.predict(input_data)[0]
-            prediction = label_mapping.get(prediction_raw, "Unknown")
-
-            # Save to database
-            new_entry = TA(Gender=Gender, Age=Age, HbA1c=HbA1c, Cholesterol=Cholesterol,
-                           Triglycerides=Triglycerides, BMI=BMI, Prediction=prediction)
-            db.session.add(new_entry)
-            db.session.commit()
-
-        except Exception as e:
-            prediction = f"Error: {str(e)}"
-
-    return render_template("model_farhan.html", prediction=prediction)
-
-@app.route("/predict2")
-def prediction():
-    return render_template("model_abid.html")
-
-@app.route("/predictAbid", methods=['GET', 'POST'])
-def predict_abid():
-    error = None
-    prediction = None
-
-    if request.method == 'POST':
-        try:
-            Gender = request.form.get('Gender')
-            Age = request.form.get('Age', type=int)
-            Urea = request.form.get('Urea', type=float)
-            Creatine = request.form.get('Creatine', type=float)
-            HbA1c = request.form.get('HbA1c', type=float)
-            Cholesterol = request.form.get('Cholesterol', type=float)
-            Triglycerides = request.form.get('Trigliserida', type=float)
-            VLDL = request.form.get('VLDL', type=float)
-            BMI = request.form.get('BMI', type=float)
-
-            if None in [Gender, Age, Urea, Creatine, HbA1c, Cholesterol, Triglycerides, VLDL, BMI]:
-                raise ValueError("All fields are required.")
-
-            Gender_encoded = 1 if Gender.lower() == "male" else 0
-
-            input_data = pd.DataFrame([[Gender_encoded, Age, Urea, Creatine, HbA1c, Cholesterol, Triglycerides, VLDL, BMI]],
-                                      columns=['Gender', 'Age', 'Urea', 'Creatine', 'HbA1c', 'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'])
-
-            # Predict
-            prediction_raw = model_abid.predict(input_data)[0]
-            prediction = label_mapping.get(prediction_raw, "Unknown")
-
-            # Save to database
-            new_entry = ta(Gender=Gender, Age=Age, Urea=Urea, Creatine=Creatine, HbA1c=HbA1c, 
-                           Cholesterol=Cholesterol, Triglycerides=Triglycerides, VLDL=VLDL, BMI=BMI, 
-                           Prediction=prediction)
-            db.session.add(new_entry)
-            db.session.commit()
-
-        except Exception as e:
-            error = str(e)
-
-    return render_template("model_abid.html", prediction=prediction, error=error)
-
-@app.route("/predict3")
+@app.route("/predict")
 def prediction_both():
     return render_template("model_both.html")
 
 @app.route("/predictBoth", methods=['POST'])
 def predict_both_models():
+    label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
     prediction_abid = None
     prediction_farhan = None
-    label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
 
     try:
-        # Get form input
-        Gender = request.form.get('Gender')
-        Age = int(request.form.get('Age'))
-        Urea = float(request.form.get('Urea'))
-        Creatine = float(request.form.get('Creatine'))
-        HbA1c = float(request.form.get('HbA1c'))
-        Cholesterol = float(request.form.get('Cholesterol'))
-        Triglycerides = float(request.form.get('Trigliserida'))
-        VLDL = float(request.form.get('VLDL'))
-        BMI = float(request.form.get('BMI'))
+        # Ambil data dari form
+        Gender = request.form['Gender']
+        Age = int(request.form['Age'])
+        Urea = float(request.form['Urea'])
+        Creatine = float(request.form['Creatine'])
+        HbA1c = float(request.form['HbA1c'])
+        Cholesterol = float(request.form['Cholesterol'])
+        Triglycerides = float(request.form['Trigliserida'])
+        VLDL = float(request.form['VLDL'])
+        BMI = float(request.form['BMI'])
 
-        Gender_encoded = 1 if Gender.lower() == "male" else 0
-        
-        # Abid model input
-        input_abid = pd.DataFrame([[Gender_encoded, Age, Urea, Creatine, HbA1c, Cholesterol, Triglycerides, VLDL, BMI]],
-                                  columns=['Gender', 'Age', 'Urea', 'Creatine', 'HbA1c', 'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'])
+        # Encode gender
+        Gender_encoded = 1 if Gender.lower() == 'male' else 0
 
-        prediction_raw_abid = model_abid.predict(input_abid)[0]
-        prediction_abid = label_mapping.get(prediction_raw_abid, "Unknown")
+        # Buat satu DataFrame untuk kedua model
+        input_data = pd.DataFrame([[
+            Gender_encoded, Age, Urea, Creatine, HbA1c,
+            Cholesterol, Triglycerides, VLDL, BMI
+        ]], columns=[
+            'Gender', 'Age', 'Urea', 'Creatine', 'HbA1c',
+            'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'
+        ])
 
-        # Farhan model input
-        input_farhan = pd.DataFrame([[HbA1c, BMI, Age, Triglycerides, Cholesterol, Gender_encoded]],
-                                    columns=['HbA1c', 'BMI', 'Age', 'Trigliserida', 'Cholesterol', 'Gender'])
+        # Prediksi dengan model Abid
+        result_abid = model_abid.predict(input_data)[0]
+        prediction_abid = label_mapping.get(result_abid, "Unknown")
 
-        prediction_raw_farhan = model_farhan.predict(input_farhan)[0]
-        prediction_farhan = label_mapping.get(prediction_raw_farhan, "Unknown")
+        # Prediksi dengan model Farhan
+        result_farhan = model_farhan.predict(input_data)[0]
+        prediction_farhan = label_mapping.get(result_farhan, "Unknown")
+
 
     except Exception as e:
+        print("model_abid type:", type(model_abid))
+        print("model_farhan type:", type(model_farhan))
         prediction_abid = f"Error: {str(e)}"
         prediction_farhan = f"Error: {str(e)}"
 
-    return render_template("model_both.html", prediction_abid=prediction_abid, prediction_farhan=prediction_farhan)
+    return render_template("model_both.html",
+                           prediction_abid=prediction_abid,
+                           prediction_farhan=prediction_farhan)
 
 if __name__ == '__main__':
     with app.app_context():
