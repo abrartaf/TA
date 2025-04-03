@@ -28,8 +28,10 @@ class ta(db.Model):
     Prediction = db.Column(db.String(50), nullable=False)
 
 # Load Machine Learning Models
-with open('rf.pkl', 'rb') as model_file:
-    model_farhan = pickle.load(model_file)
+with open('rf.pkl', 'rb') as model_file_farhan:
+    model_farhan = pickle.load(model_file_farhan)
+    print("✅ model_farhan LOADED:", type(model_farhan))  # Ini HARUS RandomForest
+
 with open('model_abid.pkl', 'rb') as model_file_abid:
     model_abid = pickle.load(model_file_abid)
 
@@ -84,8 +86,8 @@ def predict_both_models():
 
 
     except Exception as e:
-        print("model_abid type:", type(model_abid))
-        print("model_farhan type:", type(model_farhan))
+        print("TIPE model_abid:", type(model_abid))
+        print("TIPE model_farhan:", type(model_farhan))
         prediction_abid = f"Error: {str(e)}"
         prediction_farhan = f"Error: {str(e)}"
 
