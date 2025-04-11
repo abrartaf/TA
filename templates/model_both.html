@@ -124,17 +124,17 @@
             <input type="text" name="BMI" value="{{ form_data.get('BMI', '') }}" required>
 
             <div class="buttons">
-                <button type="submit" name="model" value="abid">Predict Abid</button>
-                <button type="submit" name="model" value="farhan">Predict Farhan</button>
+                <button type="submit" name="model" value="xgb">XGBoost dan PSO</button>
+                <button type="submit" name="model" value="rf">Random Forest dan PSO</button>
             </div>
         </form>
 
         <div class="result">
-            {% if prediction_abid %}
-                <p>Hasil Prediksi Model Abid: {{ prediction_abid }}</p>
+            {% if prediction_xgb %}
+                <p>XGBoost dan PSO: {{ prediction_xgb }}</p>
             {% endif %}
-            {% if prediction_farhan %}
-                <p>Hasil Prediksi Model Farhan: {{ prediction_farhan }}</p>
+            {% if prediction_rf %}
+                <p>Random Forest dan PSO: {{ prediction_rf }}</p>
             {% endif %}
         </div>
     </div>

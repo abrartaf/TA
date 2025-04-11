@@ -28,9 +28,9 @@ class ta(db.Model):
 
 # Load models
 with open('rf.pkl', 'rb') as f:
-    model_farhan = pickle.load(f)
-with open('model_abid.pkl', 'rb') as f:
-    model_abid = pickle.load(f)
+    model_rf = pickle.load(f)
+with open('model_xgb.pkl', 'rb') as f:
+    model_xgb = pickle.load(f)
 
 label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
 
@@ -41,8 +41,8 @@ def home():
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    prediction_abid = session.get("prediction_abid")
-    prediction_farhan = session.get("prediction_farhan")
+    prediction_xgb = session.get("prediction_xgb")
+    prediction_rf = session.get("prediction_rf")
     form_data = session.get("form_data", {})
 
     if request.method == "POST":
@@ -78,27 +78,27 @@ def predict():
                          'Cholesterol', 'Trigliserida', 'VLDL', 'BMI'])
 
             # Prediksi berdasarkan tombol
-            if selected_model == "abid":
-                result = model_abid.predict(input_data)[0]
-                prediction_abid = label_mapping.get(result, "Unknown")
-                session["prediction_abid"] = prediction_abid
+            if selected_model == "xgb":
+                result = model_xgb.predict(input_data)[0]
+                prediction_xgb = label_mapping.get(result, "Unknown")
+                session["prediction_xgb"] = prediction_xgb
 
-            elif selected_model == "farhan":
-                result = model_farhan.predict(input_data)[0]
-                prediction_farhan = label_mapping.get(result, "Unknown")
-                session["prediction_farhan"] = prediction_farhan
+            elif selected_model == "rf":
+                result = model_rf.predict(input_data)[0]
+                prediction_rf = label_mapping.get(result, "Unknown")
+                session["prediction_rf"] = prediction_rf
 
         except Exception as e:
-            if selected_model == "abid":
-                session["prediction_abid"] = f"Error: {str(e)}"
-            elif selected_model == "farhan":
-                session["prediction_farhan"] = f"Error: {str(e)}"
+            if selected_model == "xgb":
+                session["prediction_xgb"] = f"Error: {str(e)}"
+            elif selected_model == "rf":
+                session["prediction_rf"] = f"Error: {str(e)}"
 
         return redirect(url_for("predict"))
 
     return render_template("model_both.html",
-                           prediction_abid=prediction_abid,
-                           prediction_farhan=prediction_farhan,
+                           prediction_xgb=prediction_xgb,
+                           prediction_rf=prediction_rf,
                            form_data=form_data)
 
 if __name__ == "__main__":
