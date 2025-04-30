@@ -36,7 +36,7 @@ label_mapping = {0: "Non Diabetes", 1: "Pre-diabetes", 2: "Diabetes"}
 
 @app.route("/")
 def home():
-    session.clear()  # Reset semua hasil jika kembali ke home
+    session.clear()  
     return render_template("home.html")
 
 @app.route("/predict", methods=["GET", "POST"])
