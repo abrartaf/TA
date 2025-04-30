@@ -100,6 +100,12 @@ def predict():
                            prediction_xgb=prediction_xgb,
                            prediction_rf=prediction_rf,
                            form_data=form_data)
+@app.route("/reset")
+def reset():
+    session.pop("form_data", None)
+    session.pop("prediction_xgb", None)
+    session.pop("prediction_rf", None)
+    return redirect(url_for("predict"))
 
 if __name__ == "__main__":
     with app.app_context():

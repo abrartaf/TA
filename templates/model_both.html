@@ -81,6 +81,24 @@
             font-weight: bold;
         }
     </style>
+    <script>
+        function autofill(value) {
+            const data = {
+                non: { Gender: 'Male', Age: 30, Urea: 4.2, Creatine: 0.9, HbA1c: 5.4, Cholesterol: 180, Trigliserida: 100, VLDL: 20, BMI: 23 },
+                pra: { Gender: 'Female', Age: 45, Urea: 5.0, Creatine: 1.1, HbA1c: 6.2, Cholesterol: 190, Trigliserida: 130, VLDL: 26, BMI: 28 },
+                dia: { Gender: 'Male', Age: 55, Urea: 6.1, Creatine: 1.4, HbA1c: 8.1, Cholesterol: 220, Trigliserida: 180, VLDL: 36, BMI: 32 },
+            }[value];
+            for (const [key, val] of Object.entries(data)) {
+                document.querySelector(`[name=${key}]`).value = val;
+            }
+        }
+
+        function resetForm() {
+            document.querySelector("form").reset();
+
+            window.location.href = "/predict";
+        }
+    </script>
 </head>
 
 <body>
@@ -91,6 +109,14 @@
 
     <div class="container">
         <h2>Diabetes Prediction Form</h2>
+        <div class="buttons">
+            <a href="/reset" style="flex: 1; text-align: center; padding: 10px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px;">Reset</a>
+        </div>        
+        <div class="buttons">
+            <button type="button" onclick="autofill('non')">Autofill Non-Diabetes</button>
+            <button type="button" onclick="autofill('pra')">Autofill Pre-Diabetes</button>
+            <button type="button" onclick="autofill('dia')">Autofill Diabetes</button>
+        </div>
         <form method="POST" id="predictionForm">
             <label>Gender:</label>
             <select name="Gender" required>
@@ -131,10 +157,10 @@
 
         <div class="result">
             {% if prediction_xgb %}
-                <p>XGBoost dan PSO: {{ prediction_xgb }}</p>
+            <p>XGBoost dan PSO: {{ prediction_xgb }}</p>
             {% endif %}
             {% if prediction_rf %}
-                <p>Random Forest dan PSO: {{ prediction_rf }}</p>
+            <p>Random Forest dan PSO: {{ prediction_rf }}</p>
             {% endif %}
         </div>
     </div>
