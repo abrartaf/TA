@@ -23,3 +23,11 @@ The diabetes prediction is based on the following clinical input values provided
 - Triglycerides (fat levels in the blood)
 - VLDL (Very Low-Density Lipoprotein level)
 - BMI (Body Mass Index)
+
+### 🐍 Create and Activate Virtual Environment
+
+#### Windows
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
