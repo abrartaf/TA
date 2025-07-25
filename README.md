@@ -24,10 +24,29 @@ The diabetes prediction is based on the following clinical input values provided
 - VLDL (Very Low-Density Lipoprotein level)
 - BMI (Body Mass Index)
 
-### 🐍 Create and Activate Virtual Environment
+## 🚀 Getting Started
 
-#### Windows
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/diabetes-diagnosis-flask.git
+cd diabetes-diagnosis-flask
+```
+2. Create and Activate Virtual Environment
+Windows
 ```bash
 python -m venv venv
 venv\Scripts\activate
+```
+macOS/Linux
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+3. Install Requirements
+```bash
+pip install -r requirements.txt
+```
+4. Run the Flask App
+```bash
+python app.py
 ```
