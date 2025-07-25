@@ -28,7 +28,7 @@ The diabetes prediction is based on the following clinical input values provided
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/diabetes-diagnosis-flask.git
+git clone https://github.com/abrartaf/TA.git
 cd diabetes-diagnosis-flask
 ```
 2. Create and Activate Virtual Environment
